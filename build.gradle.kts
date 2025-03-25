@@ -41,6 +41,10 @@ dependencies {
 	implementation("io.swagger.core.v3:swagger-annotations")
 	implementation("io.swagger.core.v3:swagger-jaxrs2")
 
+	// Validação de DTOs
+	implementation("javax.validation:validation-api")
+	implementation("org.hibernate.validator:hibernate-validator")
+
 }
 
 tasks.withType<Test> {
