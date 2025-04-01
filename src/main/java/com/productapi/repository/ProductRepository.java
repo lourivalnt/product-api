@@ -8,5 +8,5 @@ public interface ProductRepository {
     Product salvar(Product product);
     Product findById(Long id);
     List<Product> findAll();
-    void excluir(Long id);
+    void delete(Long id);
 }

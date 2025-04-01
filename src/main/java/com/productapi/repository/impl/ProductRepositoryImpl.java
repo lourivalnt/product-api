@@ -3,6 +3,7 @@ package com.productapi.repository.impl;
 import com.productapi.domain.Category;
 import com.productapi.domain.Product;
 import com.productapi.repository.ProductRepository;
+import com.productapi.repository.mapper.ProductRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -37,27 +38,22 @@ public class ProductRepositoryImpl implements ProductRepository {
                 "FROM products p " +
                 "JOIN categories c ON p.category_id = c.id " +
                 "WHERE p.id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
-            return Product.builder()
-                    .id(rs.getLong("id"))
-                    .name(rs.getString("name"))
-                    .description(rs.getString("description"))
-                    .price(rs.getDouble("price"))
-                    .category_id(Category.builder()
-                            .id(rs.getLong("id"))
-                            .name(rs.getString("name"))
-                            .build())
-                    .build();
-        });
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new ProductRowMapper());
+
     }
 
     @Override
     public List<Product> findAll() {
-        return List.of();
+        String sql = "SELECT p.id AS id, p.name AS name, p.description AS description, " +
+                "p.price AS price, c.id AS id, c.name AS name " +
+                "FROM products p " +
+                "JOIN categories c ON p.id = c.id";
+        return jdbcTemplate.query(sql, new ProductRowMapper());
     }
 
     @Override
-    public void excluir(Long id) {
-
+    public void delete(Long id) {
+        String sql = "DELETE FROM products WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }
