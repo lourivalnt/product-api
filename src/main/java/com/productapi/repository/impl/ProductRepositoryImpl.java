@@ -17,7 +17,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Product salvar(Product product) {
+    public Product save(Product product) {
         if (product.getId() == null) {
            String sql = "INSERT INTO product (name, description, price, category) VALUES (?, ?, ?, ?)";
            jdbcTemplate.update(sql, product.getName(), product.getDescription(), product.getPrice(), product.getCategory_id().getId());
@@ -43,12 +43,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<Product> findAll(int page, int size) {
         String sql = "SELECT p.id AS id, p.name AS name, p.description AS description, " +
                 "p.price AS price, c.id AS id, c.name AS name " +
                 "FROM products p " +
-                "JOIN categories c ON p.id = c.id";
-        return jdbcTemplate.query(sql, new ProductRowMapper());
+                "JOIN categories c ON p.id = c.id" +
+                "ORDER BY p.id " +
+                "LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, new Object[]{size, page * size}, new ProductRowMapper());
     }
 
     @Override

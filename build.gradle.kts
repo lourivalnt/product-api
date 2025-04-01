@@ -34,8 +34,8 @@ dependencies {
 
 	// Quarkus Core
 	implementation("io.quarkus:quarkus-resteasy")
-	implementation ("io.quarkus:quarkus-jdbc-postgresql")
-	implementation ("io.quarkus:quarkus-redis-client")
+	implementation("io.quarkus:quarkus-jdbc-postgresql")
+	implementation("io.quarkus:quarkus-redis-client")
 
 	// Swagger/OpenAPI
 	implementation("io.swagger.core.v3:swagger-annotations")
@@ -44,6 +44,10 @@ dependencies {
 	// Validação de DTOs
 	implementation("javax.validation:validation-api")
 	implementation("org.hibernate.validator:hibernate-validator")
+
+	// MapStruct
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
 }
 
