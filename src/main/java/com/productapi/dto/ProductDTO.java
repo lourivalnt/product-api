@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Builder
 public class ProductDTO {
 
+    private  Long id;
+
     @NotBlank(message = "The name is required")
     private String name;
 

@@ -58,4 +58,10 @@ public class ProductRepositoryImpl implements ProductRepository {
         String sql = "DELETE FROM products WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    @Override
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM products";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
 }

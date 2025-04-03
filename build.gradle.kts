@@ -26,29 +26,28 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+
+	// Lombok
 	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	// Quarkus Core
-	implementation("io.quarkus:quarkus-resteasy")
-	implementation("io.quarkus:quarkus-jdbc-postgresql")
-	implementation("io.quarkus:quarkus-redis-client")
+	// Banco de Dados
+	runtimeOnly("org.postgresql:postgresql")
 
-	// Swagger/OpenAPI
-	implementation("io.swagger.core.v3:swagger-annotations")
-	implementation("io.swagger.core.v3:swagger-jaxrs2")
-
-	// Validação de DTOs
-	implementation("javax.validation:validation-api")
+	// Validação (Jakarta)
+	implementation("jakarta.validation:jakarta.validation-api")
 	implementation("org.hibernate.validator:hibernate-validator")
 
 	// MapStruct
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
+	// SpringDoc OpenAPI (Swagger)
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+
+	// Testes
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
