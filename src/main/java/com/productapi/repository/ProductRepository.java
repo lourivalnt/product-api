@@ -9,6 +9,6 @@ public interface ProductRepository {
     Product findById(Long id);
     List<Product> findAll(int page, int size);
     void delete(Long id);
-
     int countAll();
+    boolean existsById(Long id);
 }

@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         if (product.getId() == null) {
            String sql = "INSERT INTO product (name, description, price, category) VALUES (?, ?, ?, ?)";
            jdbcTemplate.update(sql, product.getName(), product.getDescription(), product.getPrice(), product.getCategory_id().getId());
-           Long id  = jdbcTemplate.queryForObject("SELECT LASTVAL()", Long.class);
+           Long id  = jdbcTemplate.queryForObject("SELECT currval('id')", Long.class);
            product.setId(id);
         } else {
             String sql = "UPDATE products SET nome = ?, description = ?, price = ?, category_id = ? WHERE id = ?";
@@ -38,7 +39,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 "FROM products p " +
                 "JOIN categories c ON p.category_id = c.id " +
                 "WHERE p.id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new ProductRowMapper());
+        return jdbcTemplate.queryForObject(sql, new ProductRowMapper(), id);
 
     }
 
@@ -47,10 +48,10 @@ public class ProductRepositoryImpl implements ProductRepository {
         String sql = "SELECT p.id AS id, p.name AS name, p.description AS description, " +
                 "p.price AS price, c.id AS id, c.name AS name " +
                 "FROM products p " +
-                "JOIN categories c ON p.id = c.id" +
+                "JOIN categories c ON p.id = c.id " +
                 "ORDER BY p.id " +
                 "LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{size, page * size}, new ProductRowMapper());
+        return jdbcTemplate.query(sql, new ProductRowMapper(), size, page * size);
     }
 
     @Override
@@ -62,6 +63,13 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public int countAll() {
         String sql = "SELECT COUNT(*) FROM products";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class);
+        return Optional.ofNullable(result).orElse(0);
+    }
+
+    public boolean existsById(Long id) {
+        String sql = "SELECT count(*) FROM products WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
     }
 }
