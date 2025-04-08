@@ -45,6 +45,13 @@ dependencies {
 	// SpringDoc OpenAPI (Swagger)
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.boot:spring-boot-starter-cache")
+
+	// Jackson (para serialização/deserialização de objetos)
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+
 	// Testes
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

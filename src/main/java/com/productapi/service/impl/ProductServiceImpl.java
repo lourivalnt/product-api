@@ -4,6 +4,7 @@ import com.productapi.domain.Product;
 import com.productapi.repository.ProductRepository;
 import com.productapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable(value = "prodicts", key = "#id") // Armazena o resultado no cache
     public Product findById(Long id) {
+        System.out.println("Buscando produto no banco de dados...");
         return productRepository.findById(id);
     }
 

@@ -5,6 +5,8 @@ import com.productapi.domain.Product;
 import com.productapi.repository.ProductRepository;
 import com.productapi.repository.mapper.ProductRowMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +20,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
+    @CacheEvict(value = "productsPage", allEntries = true) // Limpa todo o cache de páginas
     public Product save(Product product) {
         if (product.getId() == null) {
            String sql = "INSERT INTO product (name, description, price, category) VALUES (?, ?, ?, ?)";
@@ -34,8 +37,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product findById(Long id) {
-        String sql = "SELECT p.id AS product_id, p.name AS product_name, p.description AS product_description, " +
-                "p.price AS product_price, c.id AS category_id, c.name AS category_name " +
+        String sql = "SELECT p.id, p.name, p.description, " +
+                "p.price, c.id, c.name " +
                 "FROM products p " +
                 "JOIN categories c ON p.category_id = c.id " +
                 "WHERE p.id = ?";
@@ -44,7 +47,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    @Cacheable(value = "productsPage", key = "{#page, #size}") // Chave composta: page + size
     public List<Product> findAll(int page, int size) {
+        System.out.println("Buscando produtos no banco de dados...");
         String sql = "SELECT p.id AS id, p.name AS name, p.description AS description, " +
                 "p.price AS price, c.id AS id, c.name AS name " +
                 "FROM products p " +
@@ -55,6 +60,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    @CacheEvict(value = "productsPage", allEntries = true)
     public void delete(Long id) {
         String sql = "DELETE FROM products WHERE id = ?";
         jdbcTemplate.update(sql, id);
