@@ -1,6 +1,6 @@
 ---
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Product API
 
 O **Product API** é uma API RESTful desenvolvida em Java com Spring Boot para gerenciar produtos e categorias. A API oferece operações CRUD (Create, Read, Update, Delete) e suporta paginação, caching com Redis e documentação automática com Swagger.
 
