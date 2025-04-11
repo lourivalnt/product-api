@@ -7,6 +7,7 @@ import com.productapi.repository.mapper.ProductRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +24,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @CacheEvict(value = "productsPage", allEntries = true) // Limpa todo o cache de páginas
     public Product save(Product product) {
         if (product.getId() == null) {
-           String sql = "INSERT INTO product (name, description, price, category) VALUES (?, ?, ?, ?)";
+           String sql = "INSERT INTO product (name, description, price, category_id) VALUES (?, ?, ?, ?)";
            jdbcTemplate.update(sql, product.getName(), product.getDescription(), product.getPrice(), product.getCategory_id().getId());
            Long id  = jdbcTemplate.queryForObject("SELECT currval('id')", Long.class);
            product.setId(id);
@@ -36,13 +37,17 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Product findById(Long id) {
+    public Optional<Product> findById(Long id) {
         String sql = "SELECT p.id, p.name, p.description, " +
                 "p.price, c.id, c.name " +
                 "FROM products p " +
                 "JOIN categories c ON p.category_id = c.id " +
                 "WHERE p.id = ?";
-        return jdbcTemplate.queryForObject(sql, new ProductRowMapper(), id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new ProductRowMapper(), id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
 
     }
 

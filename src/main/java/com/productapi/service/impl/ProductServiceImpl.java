@@ -1,6 +1,7 @@
 package com.productapi.service.impl;
 
 import com.productapi.domain.Product;
+import com.productapi.exception.ResourceNotFoundException;
 import com.productapi.repository.ProductRepository;
 import com.productapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "prodicts", key = "#id") // Armazena o resultado no cache
+    @Cacheable(value = "products", key = "#id") // Armazena o resultado no cache
     public Product findById(Long id) {
         System.out.println("Buscando produto no banco de dados...");
-        return productRepository.findById(id);
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with ID " + id + " not found"));
     }
 
     @Override
